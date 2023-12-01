@@ -22,8 +22,7 @@ func main() {
 	solution1 := day1.Part1(puzzleInput)
 	fmt.Printf("Part 1 solution %d\n", solution1)
 
-	/* solution2 := day1.Part2(puzzleInput) */
-	solution2 := day1.Part2(sampleInput2)
+	solution2 := day1.Part2(puzzleInput)
 	fmt.Printf("Part 2 solution %d\n", solution2)
 
 }
@@ -35,45 +34,6 @@ func (d Day1) Part1(filename string) int {
 		log.Fatal("Error reading input:", err)
 	}
 
-	return d.adderHelper(input)
-}
-
-func (d Day1) Part2(filename string) int {
-	input, err := utils.ReadInput(filename)
-	strNums := map[string]string{
-		"one":   "1",
-		"two":   "2",
-		"three": "3",
-		"four":  "4",
-		"five":  "5",
-		"six":   "6",
-		"seven": "7",
-		"eight": "8",
-		"nine":  "9",
-	}
-
-	if err != nil {
-		log.Fatal("Error reading input:", err)
-	}
-
-	var newInput []string
-	var newLine string
-
-	for _, line := range input {
-		newLine = line
-		for strNum, strNumVal := range strNums {
-			if strings.Contains(newLine, strNum) {
-				newLine = strings.Replace(newLine, strNum, strNumVal, -1)
-			}
-		}
-
-		newInput = append(newInput, newLine)
-	}
-
-	return d.adderHelper(newInput)
-}
-
-func (d Day1) adderHelper(input []string) int {
 	values := make([]string, 0)
 	solution := 0
 
@@ -91,6 +51,64 @@ func (d Day1) adderHelper(input []string) int {
 	for _, val := range values {
 		intVal, _ := strconv.Atoi(val)
 		solution += intVal
+	}
+
+	return solution
+}
+
+func (d Day1) Part2(filename string) int {
+	input, err := utils.ReadInput(filename)
+	strNums := map[string]string{
+		"one":   "1",
+		"two":   "2",
+		"three": "3",
+		"four":  "4",
+		"five":  "5",
+		"six":   "6",
+		"seven": "7",
+		"eight": "8",
+		"nine":  "9",
+		"1":     "1",
+		"2":     "2",
+		"3":     "3",
+		"4":     "4",
+		"5":     "5",
+		"6":     "6",
+		"7":     "7",
+		"8":     "8",
+		"9":     "9",
+	}
+
+	if err != nil {
+		log.Fatal("Error reading input:", err)
+	}
+
+	solution := 0
+	leftIdx := 9999
+	rightIdx := -1
+	leftNum := ""
+	rightNum := ""
+
+	for _, line := range input {
+		for key, val := range strNums {
+			leftKeyIdx := strings.Index(line, key)
+			rightKeyIdx := strings.LastIndex(line, key)
+			if leftKeyIdx > -1 && leftKeyIdx < leftIdx {
+				leftIdx = leftKeyIdx
+				leftNum = val
+			}
+			if rightKeyIdx > -1 && rightKeyIdx > rightIdx {
+				rightIdx = rightKeyIdx
+				rightNum = val
+			}
+		}
+
+		res := leftNum + rightNum
+		intVal, _ := strconv.Atoi(res)
+		solution += intVal
+
+		leftIdx = 9999
+		rightIdx = -1
 	}
 
 	return solution
