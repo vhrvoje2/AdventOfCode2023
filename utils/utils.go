@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-func ReadInput() ([]string, error) {
-	file, err := os.Open("input.txt")
+func ReadInput(inputFile string) ([]string, error) {
+	file, err := os.Open(inputFile)
 	if err != nil {
 		return nil, err
 	}

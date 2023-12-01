@@ -21,7 +21,7 @@ func areEqualSlices(a, b []string) bool {
 
 func TestReadFileLineByLine(t *testing.T) {
 	expected := []string{"this", "is", "test", "input"}
-	lines, err := utils.ReadInput()
+	lines, err := utils.ReadInput("input.txt")
 
 	if err != nil {
 		t.Errorf("Error reading input file.")

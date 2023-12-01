@@ -1,27 +1,26 @@
 package main
 
 import (
-	"adventofcode2023/utils"
-	"log"
 	"testing"
 )
 
 func TestSampleInput1(t *testing.T) {
-	lines, err := utils.ReadInput()
-	if err != nil {
-		log.Fatal("Error reading input:", err)
-	}
-	t.Log(lines)
-}
+	expected := 142
+	day1 := Day1{}
+	actual := day1.Part1(sampleInput)
 
-func TestActualInput1(t *testing.T) {
-	t.Logf("Ok")
+	if actual != expected {
+		t.Errorf("Returned %d, expected %d", actual, expected)
+	}
 }
 
 func TestSampleInput2(t *testing.T) {
-	t.Logf("Ok")
-}
+	expected := 281
 
-func TestActualInput2(t *testing.T) {
-	t.Logf("Ok")
+	day1 := Day1{}
+	actual := day1.Part2(sampleInput)
+
+	if actual != expected {
+		t.Errorf("Returned %d, expected %d", actual, expected)
+	}
 }
