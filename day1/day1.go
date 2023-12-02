@@ -24,7 +24,6 @@ func main() {
 
 	solution2 := day1.Part2(puzzleInput)
 	fmt.Printf("Part 2 solution %d\n", solution2)
-
 }
 
 func (d Day1) Part1(filename string) int {
