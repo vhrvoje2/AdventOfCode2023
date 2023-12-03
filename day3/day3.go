@@ -47,7 +47,7 @@ func main() {
 func (d Day1) Part1(filename string) int {
 	input, err := utils.ReadInput(filename)
 	solution := 0
-	numbers := []Number{}
+	numbers := []*Number{}
 	symbols := []Symbol{}
 
 	if err != nil {
@@ -59,12 +59,16 @@ func (d Day1) Part1(filename string) int {
 			readChar := string(line[i])
 			_, err := strconv.Atoi(string(readChar))
 			if readChar != "." && err == nil {
-				newNumber := Number{}
+				newNumber := &Number{}
 				newNumber.digits = readChar
 				newNumber.coords = append(newNumber.coords, Coord{lineIdx, i})
+				numbers = append(numbers, newNumber)
 
 				for err == nil {
 					i++
+					if i > len(line)-1 {
+						break
+					}
 					nextChar := string(line[i])
 					_, err := strconv.Atoi(string(nextChar))
 					if err == nil {
@@ -74,7 +78,10 @@ func (d Day1) Part1(filename string) int {
 						break
 					}
 				}
-				numbers = append(numbers, newNumber)
+			}
+
+			if i > len(line)-1 {
+				break
 			}
 
 			readChar = string(line[i])
@@ -112,7 +119,7 @@ func (d Day1) Part1(filename string) int {
 func (d Day1) Part2(filename string) int {
 	input, err := utils.ReadInput(filename)
 	solution := 0
-	numbers := []Number{}
+	numbers := []*Number{}
 	symbols := []Symbol{}
 
 	if err != nil {
@@ -124,12 +131,16 @@ func (d Day1) Part2(filename string) int {
 			readChar := string(line[i])
 			_, err := strconv.Atoi(string(readChar))
 			if readChar != "." && err == nil {
-				newNumber := Number{}
+				newNumber := &Number{}
 				newNumber.digits = readChar
 				newNumber.coords = append(newNumber.coords, Coord{lineIdx, i})
 
+				numbers = append(numbers, newNumber)
 				for err == nil {
 					i++
+					if i > len(line)-1 {
+						break
+					}
 					nextChar := string(line[i])
 					_, err := strconv.Atoi(string(nextChar))
 					if err == nil {
@@ -139,7 +150,10 @@ func (d Day1) Part2(filename string) int {
 						break
 					}
 				}
-				numbers = append(numbers, newNumber)
+			}
+
+			if i > len(line)-1 {
+				break
 			}
 
 			readChar = string(line[i])
