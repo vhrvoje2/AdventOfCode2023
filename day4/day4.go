@@ -71,11 +71,42 @@ func (d Day1) Part1(filename string) int {
 }
 
 func (d Day1) Part2(filename string) int {
-	_, err := utils.ReadInput(filename)
+	input, err := utils.ReadInput(filename)
 	solution := 0
 
 	if err != nil {
 		log.Fatal("Error reading input:", err)
+	}
+
+	cards := make([]int, len(input))
+	for idx := range cards {
+		cards[idx] = 1
+	}
+
+	for idx, line := range input {
+		card := strings.Split(line, ":")
+		nums := strings.Split(card[1], "|")
+		winningNums := strings.Split(nums[0], " ")
+		myNums := strings.Split(nums[1], " ")
+		count := 0
+
+		for _, winningNum := range winningNums {
+			for _, myNum := range myNums {
+				wNum := strings.Trim(winningNum, " ")
+				mNum := strings.Trim(myNum, " ")
+				if wNum == mNum && wNum != "" && mNum != "" {
+					count += 1
+				}
+			}
+		}
+
+		for i := 1; i <= count; i++ {
+			cards[idx+i] += cards[idx]
+		}
+	}
+
+	for _, n := range cards {
+		solution += n
 	}
 
 	return solution
