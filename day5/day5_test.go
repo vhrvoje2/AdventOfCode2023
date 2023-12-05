@@ -5,7 +5,7 @@ import (
 )
 
 func TestSampleInput1(t *testing.T) {
-	expected := 142
+	expected := 35
 	day := Day{}
 	actual := day.Part1(sampleInput1)
 
@@ -15,7 +15,7 @@ func TestSampleInput1(t *testing.T) {
 }
 
 func TestSampleInput2(t *testing.T) {
-	expected := 281
+	expected := 30
 
 	day := Day{}
 	actual := day.Part2(sampleInput2)

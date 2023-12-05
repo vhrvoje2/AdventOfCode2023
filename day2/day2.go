@@ -14,18 +14,18 @@ const (
 	puzzleInput  = "input.txt"
 )
 
-type Day1 struct{}
+type Day struct{}
 
 func main() {
-	day1 := Day1{}
-	solution1 := day1.Part1(puzzleInput)
+	day := Day{}
+	solution1 := day.Part1(puzzleInput)
 	fmt.Printf("Part 1 solution %d\n", solution1)
 
-	solution2 := day1.Part2(puzzleInput)
+	solution2 := day.Part2(puzzleInput)
 	fmt.Printf("Part 2 solution %d\n", solution2)
 }
 
-func (d Day1) Part1(filename string) int {
+func (d Day) Part1(filename string) int {
 	input, err := utils.ReadInput(filename)
 	solution := 0
 
@@ -67,7 +67,7 @@ func (d Day1) Part1(filename string) int {
 	return solution
 }
 
-func (d Day1) Part2(filename string) int {
+func (d Day) Part2(filename string) int {
 	input, err := utils.ReadInput(filename)
 	solution := 0
 

@@ -1,0 +1,128 @@
+package main
+
+import (
+	"adventofcode2023/utils"
+	"fmt"
+	"log"
+	"math"
+	"strconv"
+	"strings"
+)
+
+const (
+	sampleInput1 = "test_input1.txt"
+	sampleInput2 = "test_input2.txt"
+	puzzleInput  = "input.txt"
+)
+
+type Day struct{}
+
+type MapContainer struct {
+	name string
+	maps []Map
+}
+
+func (mc *MapContainer) addMap(m Map) {
+	mc.maps = append(mc.maps, m)
+}
+
+type Map struct {
+	destStart int
+	destEnd   int
+	srcStart  int
+	srcEnd    int
+	mapRange  int
+}
+
+func main() {
+	day := Day{}
+	solution1 := day.Part1(sampleInput1)
+	fmt.Printf("Part 1 solution %d\n", solution1)
+
+	solution2 := day.Part2(puzzleInput)
+	fmt.Printf("Part 2 solution %d\n", solution2)
+
+}
+
+func (d Day) Part1(filename string) int {
+	input, err := utils.ReadInput(filename)
+	solution := math.MaxInt32
+
+	if err != nil {
+		log.Fatal("Error reading input:", err)
+	}
+
+	seeds := []int{}
+	allMaps := []MapContainer{}
+	var mapCont MapContainer
+	var newMap Map
+
+	for _, line := range input {
+		if line == "" {
+			continue
+		}
+
+		splitLine := strings.Split(line, ":")
+
+		if splitLine[0] == "seeds" {
+			seeds = d.parseStrIntArray(strings.Trim(splitLine[1], " "))
+			continue
+		}
+
+		if strings.Contains(splitLine[0], "map") {
+			allMaps = append(allMaps, mapCont)
+			mapCont = MapContainer{name: splitLine[0]}
+			continue
+		}
+
+		newMap = Map{}
+		ranges := d.parseStrIntArray(line)
+		newMap.mapRange = ranges[2]
+		newMap.destStart = ranges[0]
+		newMap.destEnd = ranges[0] + newMap.mapRange
+		newMap.srcStart = ranges[1]
+		newMap.srcEnd = ranges[1] + newMap.mapRange
+		mapCont.addMap(newMap)
+	}
+
+	for i := 0; i < len(seeds); i++ {
+		seed := seeds[i]
+		for i := 1; i < len(allMaps); i++ {
+			for _, mapping := range allMaps[i].maps {
+				fmt.Printf("Seed is %d\n", seed)
+				if seed >= mapping.srcStart && seed < mapping.srcEnd {
+					diff := seed - mapping.srcStart
+					seed = mapping.destStart + diff
+					continue
+				}
+			}
+		}
+
+		if seed < solution {
+			solution = seed
+		}
+	}
+
+	return solution
+}
+
+func (d Day) Part2(filename string) int {
+	_, err := utils.ReadInput(filename)
+	solution := 0
+
+	if err != nil {
+		log.Fatal("Error reading input:", err)
+	}
+
+	return solution
+}
+
+func (d Day) parseStrIntArray(strInts string) []int {
+	ints := []int{}
+	nums := strings.Split(strInts, " ")
+	for _, num := range nums {
+		intNum, _ := strconv.Atoi(num)
+		ints = append(ints, intNum)
+	}
+	return ints
+}
