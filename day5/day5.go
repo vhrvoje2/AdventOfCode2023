@@ -184,8 +184,8 @@ func (d Day) parseSeedRanges(strInts string) []int {
 	ints := strings.Split(strInts, " ")
 
 	for i := 0; i < len(ints); i += 2 {
-		startNum, _ := strconv.Atoi(string(ints[0]))
-		rangeNum, _ := strconv.Atoi(string(ints[1]))
+		startNum, _ := strconv.Atoi(string(ints[i]))
+		rangeNum, _ := strconv.Atoi(string(ints[i+1]))
 
 		for i := startNum; i < startNum+rangeNum; i++ {
 			actualSeeds = append(actualSeeds, i)
