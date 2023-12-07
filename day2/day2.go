@@ -9,9 +9,8 @@ import (
 )
 
 const (
-	sampleInput1 = "test_input1.txt"
-	sampleInput2 = "test_input2.txt"
-	puzzleInput  = "input.txt"
+	sampleInput = "test_input1.txt"
+	puzzleInput = "input.txt"
 )
 
 type Day struct{}

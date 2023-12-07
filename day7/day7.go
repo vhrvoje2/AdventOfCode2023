@@ -10,12 +10,71 @@ import (
 )
 
 const (
-	sampleInput1 = "test_input1.txt"
-	sampleInput2 = "test_input2.txt"
-	puzzleInput  = "input.txt"
+	sampleInput = "test_input.txt"
+	puzzleInput = "input.txt"
 )
 
 type Day struct{}
+
+func (d Day) getCardMap() map[string]int {
+	m := map[string]int{
+		"2": 2,
+		"3": 3,
+		"4": 4,
+		"5": 5,
+		"6": 6,
+		"7": 7,
+		"8": 8,
+		"9": 9,
+		"T": 10,
+		"J": 11,
+		"Q": 12,
+		"K": 13,
+		"A": 14,
+	}
+
+	return m
+}
+
+func (d Day) getCardMapJoker() map[string]int {
+	m := map[string]int{
+		"J": 1,
+		"2": 2,
+		"3": 3,
+		"4": 4,
+		"5": 5,
+		"6": 6,
+		"7": 7,
+		"8": 8,
+		"9": 9,
+		"T": 10,
+		"Q": 12,
+		"K": 13,
+		"A": 14,
+	}
+
+	return m
+}
+
+func (d Day) getCardValues() []string {
+	m := []string{
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"T",
+		"J",
+		"Q",
+		"K",
+		"A",
+	}
+
+	return m
+}
 
 type HandType int8
 
@@ -50,22 +109,6 @@ func (d Day) Part1(filename string) int {
 	solution := 0
 	hands := []Hand{}
 
-	cardMap := map[string]int{
-		"2": 2,
-		"3": 3,
-		"4": 4,
-		"5": 5,
-		"6": 6,
-		"7": 7,
-		"8": 8,
-		"9": 9,
-		"T": 10,
-		"J": 11,
-		"Q": 12,
-		"K": 13,
-		"A": 14,
-	}
-
 	if err != nil {
 		log.Fatal("Error reading input:", err)
 	}
@@ -78,29 +121,7 @@ func (d Day) Part1(filename string) int {
 		hands = append(hands, newHand)
 	}
 
-	sort.Slice(hands, func(i, j int) bool {
-		// 32T3K
-		// KTJJT
-		// KK677
-		// T55J5
-		// QQQJA
-		h1 := hands[i]
-		h2 := hands[j]
-
-		if h1.handType == h2.handType {
-			for i := 0; i < len(h1.cards); i++ {
-				c1 := h1.cards[i]
-				c2 := h2.cards[i]
-				if c1 != c2 {
-					return cardMap[string(c1)] < cardMap[string(c2)]
-				} else {
-					continue
-				}
-			}
-		}
-
-		return h1.handType < h2.handType
-	})
+	hands = d.sortSlice(hands, d.getCardMap())
 
 	for i := 1; i <= len(hands); i++ {
 		solution += i * hands[i-1].bid
@@ -114,22 +135,6 @@ func (d Day) Part2(filename string) int {
 	solution := 0
 	hands := []Hand{}
 
-	cardMap := map[string]int{
-		"J": 1,
-		"2": 2,
-		"3": 3,
-		"4": 4,
-		"5": 5,
-		"6": 6,
-		"7": 7,
-		"8": 8,
-		"9": 9,
-		"T": 10,
-		"Q": 12,
-		"K": 13,
-		"A": 14,
-	}
-
 	if err != nil {
 		log.Fatal("Error reading input:", err)
 	}
@@ -142,29 +147,7 @@ func (d Day) Part2(filename string) int {
 		hands = append(hands, newHand)
 	}
 
-	sort.Slice(hands, func(i, j int) bool {
-		// 32T3K
-		// KK677
-		// T55J5
-		// QQQJA
-		// KTJJT
-		h1 := hands[i]
-		h2 := hands[j]
-
-		if h1.handType == h2.handType {
-			for i := 0; i < len(h1.cards); i++ {
-				c1 := h1.cards[i]
-				c2 := h2.cards[i]
-				if c1 != c2 {
-					return cardMap[string(c1)] < cardMap[string(c2)]
-				} else {
-					continue
-				}
-			}
-		}
-
-		return h1.handType < h2.handType
-	})
+	hands = d.sortSlice(hands, d.getCardMapJoker())
 
 	for i := 1; i <= len(hands); i++ {
 		solution += i * hands[i-1].bid
@@ -216,60 +199,29 @@ func (d Day) parseHand(h Hand) HandType {
 func (d Day) parseHand2(h Hand) HandType {
 	newHands := []Hand{}
 
-	cardMap := map[string]int{
-		"J": 1,
-		"2": 2,
-		"3": 3,
-		"4": 4,
-		"5": 5,
-		"6": 6,
-		"7": 7,
-		"8": 8,
-		"9": 9,
-		"T": 10,
-		"Q": 12,
-		"K": 13,
-		"A": 14,
-	}
-
-	valuesMap := []string{
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"T",
-		"J",
-		"Q",
-		"K",
-		"A",
-	}
-
-	for _, card := range valuesMap {
+	for _, card := range d.getCardValues() {
 		hand := strings.Replace(h.cards, "J", card, -1)
 		newHand := Hand{cards: hand, bid: h.bid, handType: 0}
 		newHand.handType = d.parseHand(newHand)
 		newHands = append(newHands, newHand)
 	}
 
-	sort.Slice(newHands, func(i, j int) bool {
-		// 32T3K
-		// KTJJT
-		// KK677
-		// T55J5
-		// QQQJA
-		h1 := newHands[i]
-		h2 := newHands[j]
+	newHands = d.sortSlice(newHands, d.getCardMapJoker())
+
+	return newHands[len(newHands)-1].handType
+}
+
+func (d Day) sortSlice(hands []Hand, sortMap map[string]int) []Hand {
+	sort.Slice(hands, func(i, j int) bool {
+		h1 := hands[i]
+		h2 := hands[j]
 
 		if h1.handType == h2.handType {
 			for i := 0; i < len(h1.cards); i++ {
 				c1 := h1.cards[i]
 				c2 := h2.cards[i]
 				if c1 != c2 {
-					return cardMap[string(c1)] < cardMap[string(c2)]
+					return d.getCardMapJoker()[string(c1)] < d.getCardMapJoker()[string(c2)]
 				} else {
 					continue
 				}
@@ -279,5 +231,5 @@ func (d Day) parseHand2(h Hand) HandType {
 		return h1.handType < h2.handType
 	})
 
-	return newHands[len(newHands)-1].handType
+	return hands
 }

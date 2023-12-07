@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	sampleInput1 = "test_input1.txt"
-	sampleInput2 = "test_input2.txt"
-	puzzleInput  = "input.txt"
+	sampleInput = "test_input.txt"
+	puzzleInput = "input.txt"
 )
 
 type Day struct{}
@@ -55,7 +54,7 @@ func (d Day) Part1(filename string) int {
 	seeds := []int{}
 	allMaps := []*MapContainer{}
 	var mapCont *MapContainer
-	var newMap Map
+	newMap := Map{}
 
 	for _, line := range input {
 		if line == "" {

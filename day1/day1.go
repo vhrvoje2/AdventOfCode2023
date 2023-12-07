@@ -4,6 +4,7 @@ import (
 	"adventofcode2023/utils"
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"strings"
 	"unicode"
@@ -16,6 +17,31 @@ const (
 )
 
 type Day struct{}
+
+func (d Day) strNums() map[string]string {
+	m := map[string]string{
+		"one":   "1",
+		"two":   "2",
+		"three": "3",
+		"four":  "4",
+		"five":  "5",
+		"six":   "6",
+		"seven": "7",
+		"eight": "8",
+		"nine":  "9",
+		"1":     "1",
+		"2":     "2",
+		"3":     "3",
+		"4":     "4",
+		"5":     "5",
+		"6":     "6",
+		"7":     "7",
+		"8":     "8",
+		"9":     "9",
+	}
+
+	return m
+}
 
 func main() {
 	day := Day{}
@@ -37,7 +63,7 @@ func (d Day) Part1(filename string) int {
 	solution := 0
 
 	for _, line := range input {
-		var result string
+		result := ""
 		for _, char := range line {
 			if !unicode.IsLetter(char) {
 				result += string(char)
@@ -57,39 +83,19 @@ func (d Day) Part1(filename string) int {
 
 func (d Day) Part2(filename string) int {
 	input, err := utils.ReadInput(filename)
-	strNums := map[string]string{
-		"one":   "1",
-		"two":   "2",
-		"three": "3",
-		"four":  "4",
-		"five":  "5",
-		"six":   "6",
-		"seven": "7",
-		"eight": "8",
-		"nine":  "9",
-		"1":     "1",
-		"2":     "2",
-		"3":     "3",
-		"4":     "4",
-		"5":     "5",
-		"6":     "6",
-		"7":     "7",
-		"8":     "8",
-		"9":     "9",
-	}
 
 	if err != nil {
 		log.Fatal("Error reading input:", err)
 	}
 
 	solution := 0
-	leftIdx := 9999
+	leftIdx := math.MaxInt32
 	rightIdx := -1
 	leftNum := ""
 	rightNum := ""
 
 	for _, line := range input {
-		for key, val := range strNums {
+		for key, val := range d.strNums() {
 			leftKeyIdx := strings.Index(line, key)
 			rightKeyIdx := strings.LastIndex(line, key)
 			if leftKeyIdx > -1 && leftKeyIdx < leftIdx {
@@ -106,7 +112,7 @@ func (d Day) Part2(filename string) int {
 		intVal, _ := strconv.Atoi(res)
 		solution += intVal
 
-		leftIdx = 9999
+		leftIdx = math.MaxInt32
 		rightIdx = -1
 	}
 
