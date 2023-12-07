@@ -175,16 +175,16 @@ func (d Day) Part2(filename string) int {
 
 func (d Day) parseHand(h Hand) HandType {
 	cards := strings.Split(h.cards, "")
-	theD := map[string]int{}
+	cardDict := map[string]int{}
 
 	for _, c := range cards {
-		theD[c]++
+		cardDict[c]++
 	}
 
 	maxN := 1
 	hasTwo := 0
 
-	for _, v := range theD {
+	for _, v := range cardDict {
 		if v > maxN {
 			maxN = v
 		}
@@ -214,41 +214,70 @@ func (d Day) parseHand(h Hand) HandType {
 }
 
 func (d Day) parseHand2(h Hand) HandType {
-	cards := strings.Split(h.cards, "")
-	theD := map[string]int{}
+	newHands := []Hand{}
 
-	for _, c := range cards {
-		theD[c]++
+	cardMap := map[string]int{
+		"J": 1,
+		"2": 2,
+		"3": 3,
+		"4": 4,
+		"5": 5,
+		"6": 6,
+		"7": 7,
+		"8": 8,
+		"9": 9,
+		"T": 10,
+		"Q": 12,
+		"K": 13,
+		"A": 14,
 	}
 
-	maxN := 1
-	hasTwo := 0
-
-	for _, v := range theD {
-		if v > maxN {
-			maxN = v
-		}
-		if v == 2 {
-			hasTwo++
-		}
+	valuesMap := []string{
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"T",
+		"J",
+		"Q",
+		"K",
+		"A",
 	}
 
-	switch maxN {
-	case 5:
-		return FiveKind
-	case 4:
-		return FourKind
-	case 3:
-		if hasTwo == 1 {
-			return FullHouse
-		}
-		return ThreeKind
-	case 2:
-		if hasTwo == 2 {
-			return TwoPair
-		}
-		return OnePair
-	default:
-		return HighCard
+	for _, card := range valuesMap {
+		hand := strings.Replace(h.cards, "J", card, -1)
+		newHand := Hand{cards: hand, bid: h.bid, handType: 0}
+		newHand.handType = d.parseHand(newHand)
+		newHands = append(newHands, newHand)
 	}
+
+	sort.Slice(newHands, func(i, j int) bool {
+		// 32T3K
+		// KTJJT
+		// KK677
+		// T55J5
+		// QQQJA
+		h1 := newHands[i]
+		h2 := newHands[j]
+
+		if h1.handType == h2.handType {
+			for i := 0; i < len(h1.cards); i++ {
+				c1 := h1.cards[i]
+				c2 := h2.cards[i]
+				if c1 != c2 {
+					return cardMap[string(c1)] < cardMap[string(c2)]
+				} else {
+					continue
+				}
+			}
+		}
+
+		return h1.handType < h2.handType
+	})
+
+	return newHands[len(newHands)-1].handType
 }
