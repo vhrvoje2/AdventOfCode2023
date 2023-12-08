@@ -44,8 +44,7 @@ func (d Day) Part1(filename string) int {
 	}
 
 	directions := strings.Split(input[0], "")
-	allPaths := []Path{}
-	pathMap := map[string]int{}
+	allPaths := map[string]Path{}
 
 	for i := 2; i < len(input); i++ {
 		pathways := strings.Split(input[i], "=")
@@ -54,25 +53,22 @@ func (d Day) Part1(filename string) int {
 		leftPath := strings.TrimSpace(strings.Replace(directions[0], "(", "", 1))
 		rightPath := strings.TrimSpace(strings.Replace(directions[1], ")", "", 1))
 		newPath := Path{path: path, left: leftPath, right: rightPath}
-		allPaths = append(allPaths, newPath)
-		pathMap[newPath.path] = i - 2
+		allPaths[newPath.path] = newPath
 	}
 
 	directionIdx := 0
-	nextPathIdx := 0
-	nextPath := allPaths[0]
+	currPath := "AAA"
 
-	for nextPath.path != END_PATH {
+	for currPath != END_PATH {
 		direction := directions[directionIdx%len(directions)]
 		directionIdx++
 		solution++
 
 		if direction == DIRECTION_LEFT {
-			nextPathIdx = pathMap[nextPath.left]
+			currPath = allPaths[currPath].left
 		} else {
-			nextPathIdx = pathMap[nextPath.right]
+			currPath = allPaths[currPath].right
 		}
-		nextPath = allPaths[nextPathIdx]
 	}
 
 	return solution
