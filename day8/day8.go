@@ -8,14 +8,14 @@ import (
 )
 
 const (
-	sampleInput = "test_input.txt"
-	puzzleInput = "input.txt"
+	sampleInput1 = "test_input1.txt"
+	sampleInput2 = "test_input2.txt"
+	puzzleInput  = "input.txt"
 )
 
 type Day struct{}
 
 type Path struct {
-	path  string
 	right string
 	left  string
 }
@@ -31,7 +31,7 @@ func main() {
 	solution1 := day.Part1(puzzleInput)
 	fmt.Printf("Part 1 solution %d\n", solution1)
 
-	solution2 := day.Part2(sampleInput)
+	solution2 := day.Part2(sampleInput2)
 	fmt.Printf("Part 2 solution %d\n", solution2)
 }
 
@@ -52,8 +52,8 @@ func (d Day) Part1(filename string) int {
 		directions := strings.Split(pathways[1], ",")
 		leftPath := strings.TrimSpace(strings.Replace(directions[0], "(", "", 1))
 		rightPath := strings.TrimSpace(strings.Replace(directions[1], ")", "", 1))
-		newPath := Path{path: path, left: leftPath, right: rightPath}
-		allPaths[newPath.path] = newPath
+		newPath := Path{left: leftPath, right: rightPath}
+		allPaths[path] = newPath
 	}
 
 	directionIdx := 0
