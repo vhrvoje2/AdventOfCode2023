@@ -14,6 +14,8 @@ const (
 	puzzleInput = "input.txt"
 )
 
+const CardValues = "23456789TJQKA"
+
 type Day struct{}
 
 func (d Day) getCardMap() map[string]int {
@@ -56,26 +58,6 @@ func (d Day) getCardMapJoker() map[string]int {
 	return m
 }
 
-func (d Day) getCardValues() []string {
-	m := []string{
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"T",
-		"J",
-		"Q",
-		"K",
-		"A",
-	}
-
-	return m
-}
-
 type HandType int8
 
 const (
@@ -101,7 +83,6 @@ func main() {
 
 	solution2 := day.Part2(puzzleInput)
 	fmt.Printf("Part 2 solution %d\n", solution2)
-
 }
 
 func (d Day) Part1(filename string) int {
@@ -199,7 +180,7 @@ func (d Day) parseHand(h Hand) HandType {
 func (d Day) parseHand2(h Hand) HandType {
 	newHands := []Hand{}
 
-	for _, card := range d.getCardValues() {
+	for _, card := range strings.Split(CardValues, "") {
 		hand := strings.Replace(h.cards, "J", card, -1)
 		newHand := Hand{cards: hand, bid: h.bid, handType: 0}
 		newHand.handType = d.parseHand(newHand)
