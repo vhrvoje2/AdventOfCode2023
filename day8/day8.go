@@ -26,6 +26,8 @@ type GhostPath struct {
 	nextPath  string
 	left      string
 	right     string
+	reachedZ  bool
+	steps     int
 }
 
 const (
@@ -103,48 +105,58 @@ func (d Day) Part2(filename string) int {
 		newPath := Path{path: path, left: leftPath, right: rightPath}
 		allPaths[path] = newPath
 		if strings.HasSuffix(path, "A") {
-			ghostPaths = append(ghostPaths, GhostPath{startPath: path, nextPath: path, left: leftPath, right: rightPath})
+			ghostPaths = append(ghostPaths, GhostPath{
+				startPath: path,
+				nextPath:  path,
+				left:      leftPath,
+				right:     rightPath,
+				reachedZ:  false,
+				steps:     0,
+			})
 		}
 	}
 
 	directionIdx := 0
-	ghostCount := len(ghostPaths)
 
-	for d.ghostPathsValid(ghostPaths) != ghostCount {
+	for !d.ghostPathsEnded(ghostPaths) {
 		direction := directions[directionIdx%len(directions)]
 		directionIdx++
-		solution++
 
-		if direction == DIRECTION_LEFT {
-			for idx, gP := range ghostPaths {
-				if strings.HasSuffix(gP.nextPath, "Z") {
-					ghostPaths[idx].nextPath = ghostPaths[idx].startPath
-				} else {
-					ghostPaths[idx].nextPath = allPaths[gP.nextPath].left
-				}
+		for idx, gNode := range ghostPaths {
+			if gNode.reachedZ {
+				continue
 			}
-		} else {
-			for idx, gP := range ghostPaths {
-				if strings.HasSuffix(gP.nextPath, "Z") {
-					ghostPaths[idx].nextPath = ghostPaths[idx].startPath
-				} else {
-					ghostPaths[idx].nextPath = allPaths[gP.nextPath].right
-				}
+
+			if direction == DIRECTION_LEFT {
+				ghostPaths[idx].nextPath = allPaths[gNode.nextPath].left
+			} else {
+				ghostPaths[idx].nextPath = allPaths[gNode.nextPath].right
+			}
+
+			if strings.HasSuffix(gNode.nextPath, "Z") {
+				ghostPaths[idx].reachedZ = true
+				ghostPaths[idx].steps = solution
 			}
 		}
+		solution++
 	}
+
+	steps := []int{}
+	for _, gP := range ghostPaths {
+		steps = append(steps, gP.steps)
+	}
+
+	//https://www.calculator.net/lcm-calculator.html?numberinputs=12169%2C20093%2C20659%2C22357%2C13301%2C18961&x=Calculate
 
 	return solution
 }
 
-func (d Day) ghostPathsValid(paths []GhostPath) int {
-	counter := 0
-
+func (d Day) ghostPathsEnded(paths []GhostPath) bool {
 	for _, gP := range paths {
-		if strings.HasSuffix(gP.nextPath, "Z") {
-			counter++
+		if !gP.reachedZ {
+			return false
 		}
 	}
 
-	return counter
+	return true
 }
